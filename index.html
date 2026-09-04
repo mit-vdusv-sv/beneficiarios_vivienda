@@ -58,7 +58,7 @@ button,select,input{font:inherit}.hide{display:none!important}
 .update{max-width:290px;overflow:hidden;text-overflow:ellipsis}.content{padding-top:14px}.section{display:none}.section.active{display:block}.grid{display:grid;gap:14px}
 .kpis{grid-template-columns:repeat(6,minmax(130px,1fr));margin-bottom:14px}.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px;box-shadow:var(--shadow);min-height:116px;text-align:left;position:relative;overflow:hidden}.kpi::after{content:"";position:absolute;width:70px;height:70px;border-radius:50%;right:-28px;bottom:-30px;background:radial-gradient(circle,rgba(249,115,22,.10),rgba(249,115,22,0) 70%)}.metric-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;margin-bottom:10px;color:#fff;box-shadow:0 6px 14px rgba(249,115,22,.18)}.metric-icon svg{width:18px;height:18px}.mi-blue{background:linear-gradient(135deg,#fb923c,#ea580c)}.mi-green{background:linear-gradient(135deg,#34c76f,#168747)}.mi-amber{background:linear-gradient(135deg,#fbbf24,#f97316)}.mi-purple{background:linear-gradient(135deg,#fdba74,#ea580c)}.mi-teal{background:linear-gradient(135deg,#fb923c,#c2410c)}.mi-red{background:linear-gradient(135deg,#ef6a5b,#c2410c)}.kpi .label{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.035em}.kpi .num{font-size:clamp(22px,2.5vw,31px);font-weight:850;color:#172033;margin-top:6px;letter-spacing:-.035em}.kpi .sub{font-size:11px;color:#98a2b3;margin-top:4px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;min-width:0}.card h3{margin:0;font-size:16px;letter-spacing:-.02em;color:#1d2939}.cardHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.cardHead .hint{color:#98a2b3;font-size:11px;text-align:right}.mainRow{grid-template-columns:1.3fr .9fr;align-items:stretch}.mapCard{min-height:440px;display:flex;flex-direction:column}.map{height:auto;min-height:370px;flex:1;border-radius:14px;overflow:hidden;background:#fff7ed;border:1px solid #ffedd5}.heatLegend{display:flex;align-items:center;gap:8px;margin-top:9px;color:#667085;font-size:11px}.heatRamp{height:9px;flex:1;border-radius:999px;background:linear-gradient(90deg,#fff7ed,#fed7aa,#fdba74,#fb923c,#ea580c,#9a3412)}
-.pointLegend{display:flex;align-items:center;gap:8px;margin-top:9px;color:#667085;font-size:11px;flex-wrap:wrap}.pointLegend b{color:#475467}.pointDot{width:10px;height:10px;border-radius:50%;background:#f97316;border:2px solid #fff;box-shadow:0 0 0 1px rgba(194,65,12,.28);display:inline-block}.pointLegend .count{margin-left:auto;color:#98a2b3}
+.pointLegend{display:flex;align-items:center;gap:8px 12px;margin-top:9px;color:#667085;font-size:11px;flex-wrap:wrap}.pointLegend b{color:#475467}.pointLegendItem{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}.pointDot{width:10px;height:10px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(15,23,42,.16);display:inline-block;flex:0 0 auto}.pointLegend .count{margin-left:auto;color:#98a2b3;white-space:nowrap}
 .chartBox{height:300px;position:relative}.chartBox.sm{height:265px}.row2{grid-template-columns:1fr 1fr;margin-top:14px}.row3{grid-template-columns:1fr 1fr 1fr;margin-top:14px}.wide{margin-top:14px}.tableWrap{overflow:auto;max-height:470px;border:1px solid var(--line);border-radius:14px}.table{width:100%;border-collapse:collapse;font-size:12px;min-width:950px;background:#fff}.table th,.table td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;vertical-align:top}.table th{position:sticky;top:0;background:#fff7ed;color:#7c2d12;z-index:2;white-space:nowrap;font-size:11px;text-transform:uppercase;letter-spacing:.035em}.table tbody tr:hover{background:#fffaf6}.pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:750;background:#fff1e7;color:#c2410c;white-space:nowrap}.pill.ok{background:#eaf8ef;color:#2f7f46}.pill.warn{background:#fff4d6;color:#9a6700}.pill.bad{background:#fdecec;color:#a83d3d}.note{color:#98a2b3;font-size:11px;margin-top:9px;line-height:1.45}
 .placeholder{min-height:55vh;display:grid;place-items:center}.placeholder .card{max-width:630px;width:100%}.empty{padding:58px 24px;text-align:center;color:#667085}.emptyIcon{width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,#fff1e7,#ffedd5);color:#ea580c;display:grid;place-items:center;margin:0 auto 16px;box-shadow:inset 0 0 0 1px #fed7aa}.emptyIcon svg{width:29px;height:29px}.empty h2{margin:0 0 8px;color:#1d2939;font-size:21px}.empty p{max-width:520px;margin:0 auto;line-height:1.6}
 @media(max-width:1220px){.filters{grid-template-columns:repeat(4,1fr)}.filters .actionBtn{width:100%}.kpis{grid-template-columns:repeat(3,1fr)}.mainRow{grid-template-columns:1fr}.row3{grid-template-columns:1fr 1fr}.row3 .card:last-child{grid-column:1/-1}}
@@ -150,7 +150,7 @@ function dashboardSection(id){
  const mapTitle=is1A?'Mapa de beneficiarios georreferenciados':'Distribución territorial de beneficiarios';
  const mapHint=is1A?'Solo se muestran registros con COORDENADA VERIFICADA = SI':'Mapa de calor por provincia · Ecuador continental';
  const mapFooter=is1A
-   ? `<div class="pointLegend"><span class="pointDot"></span><b>Coordenada verificada</b><span class="count" id="mapCount-${id}">0 ubicaciones visibles</span></div>`
+   ? `<div class="pointLegend" id="mapLegend-${id}"><span class="count" id="mapCount-${id}">0 ubicaciones visibles</span></div>`
    : `<div class="heatLegend"><span>Menor</span><div class="heatRamp"></div><span>Mayor</span></div>`;
  return `<section id="${id}" class="section ${id===active?'active':''}">
  <div class="grid kpis" id="kpis-${id}"></div>
@@ -203,70 +203,129 @@ const chartValueLabelPlugin={
     const {ctx}=chart;
     const chartType=chart.config.type;
 
-    // Donas: porcentajes fuera del anillo con líneas guía para evitar acumulaciones.
     if(chartType==='doughnut'||chartType==='pie'){
       const dataset=chart.data.datasets[0];
       const meta=chart.getDatasetMeta(0);
       if(!dataset||meta.hidden)return;
+
       const values=(dataset.data||[]).map(v=>Number(v)||0);
       const total=values.reduce((a,b)=>a+b,0);
       if(!total)return;
 
-      const items=[];
+      const inside=[];
+      const outside=[];
+
+      ctx.save();
+      ctx.font='700 10px Inter, system-ui, sans-serif';
+
       meta.data.forEach((arc,i)=>{
         const value=values[i];
         if(!value)return;
-        const p=arc.getProps(['x','y','startAngle','endAngle','outerRadius'],true);
+
+        const p=arc.getProps(
+          ['x','y','startAngle','endAngle','outerRadius','innerRadius'],
+          true
+        );
         const angle=(p.startAngle+p.endAngle)/2;
-        const cos=Math.cos(angle), sin=Math.sin(angle);
-        const color=Array.isArray(dataset.backgroundColor)?dataset.backgroundColor[i]:dataset.backgroundColor||'#64748b';
+        const span=Math.max(0,p.endAngle-p.startAngle);
+        const midRadius=(p.outerRadius+p.innerRadius)/2;
+        const ringThickness=p.outerRadius-p.innerRadius;
         const percent=value/total*100;
-        items.push({
-          value,percent,color,
-          side:cos>=0?'right':'left',
-          sx:p.x+cos*(p.outerRadius+1),
-          sy:p.y+sin*(p.outerRadius+1),
-          mx:p.x+cos*(p.outerRadius+13),
-          desiredY:p.y+sin*(p.outerRadius+20)
-        });
+        const pctText=percent.toLocaleString('es-EC',{
+          minimumFractionDigits:1,maximumFractionDigits:1
+        })+'%';
+        const countText='('+fmt(value)+')';
+        const neededWidth=Math.max(
+          ctx.measureText(pctText).width,
+          ctx.measureText(countText).width
+        )+10;
+        const availableArc=span*midRadius;
+        const color=Array.isArray(dataset.backgroundColor)
+          ? dataset.backgroundColor[i]
+          : dataset.backgroundColor||'#64748b';
+
+        // Si realmente cabe en el segmento, lo dejamos dentro en dos líneas.
+        // El criterio combina ancho de texto, longitud de arco y grosor del anillo.
+        const fitsInside=
+          percent>=5 &&
+          availableArc>=neededWidth &&
+          ringThickness>=30;
+
+        const cos=Math.cos(angle), sin=Math.sin(angle);
+
+        if(fitsInside){
+          inside.push({
+            value,percent,pctText,countText,color,
+            x:p.x+cos*midRadius,
+            y:p.y+sin*midRadius
+          });
+        }else{
+          outside.push({
+            value,percent,pctText,countText,color,
+            side:cos>=0?'right':'left',
+            sx:p.x+cos*(p.outerRadius+1),
+            sy:p.y+sin*(p.outerRadius+1),
+            mx:p.x+cos*(p.outerRadius+12),
+            desiredY:p.y+sin*(p.outerRadius+18)
+          });
+        }
       });
 
+      // Etiquetas internas.
+      inside.forEach(it=>{
+        ctx.textAlign='center';
+        ctx.textBaseline='middle';
+
+        // Texto claro sobre colores oscuros; oscuro sobre amarillo/grises claros.
+        const c=String(it.color).toLowerCase();
+        const darkText=['#e9ad00','#94a3b8','#cbd5e1'].includes(c);
+        ctx.fillStyle=darkText?'#172033':'#ffffff';
+
+        ctx.font='800 10px Inter, system-ui, sans-serif';
+        ctx.fillText(it.pctText,it.x,it.y-6);
+        ctx.font='700 9px Inter, system-ui, sans-serif';
+        ctx.fillText(it.countText,it.x,it.y+7);
+      });
+
+      // Solo los segmentos pequeños salen con línea guía.
       const layoutSide=(arr)=>{
         if(!arr.length)return;
-        const top=chart.chartArea.top+8;
-        const bottom=chart.chartArea.bottom-8;
-        const gap=18;
+        const top=chart.chartArea.top+6;
+        const bottom=chart.chartArea.bottom-6;
+        const gap=17;
+
         arr.sort((a,b)=>a.desiredY-b.desiredY);
         let prev=top-gap;
         arr.forEach(it=>{
           it.y=Math.max(it.desiredY,prev+gap);
           prev=it.y;
         });
+
         if(arr[arr.length-1].y>bottom){
-          let shift=arr[arr.length-1].y-bottom;
+          const shift=arr[arr.length-1].y-bottom;
           arr.forEach(it=>it.y-=shift);
-          for(let i=arr.length-2;i>=0;i--){
-            if(arr[i+1].y-arr[i].y<gap)arr[i].y=arr[i+1].y-gap;
-          }
-          if(arr[0].y<top){
-            const down=top-arr[0].y;
-            arr.forEach(it=>it.y+=down);
-          }
+        }
+        for(let i=arr.length-2;i>=0;i--){
+          if(arr[i+1].y-arr[i].y<gap)arr[i].y=arr[i+1].y-gap;
+        }
+        if(arr[0].y<top){
+          const shift=top-arr[0].y;
+          arr.forEach(it=>it.y+=shift);
         }
       };
-      layoutSide(items.filter(x=>x.side==='left'));
-      layoutSide(items.filter(x=>x.side==='right'));
 
-      ctx.save();
-      ctx.lineWidth=1.15;
-      ctx.font='700 10px Inter, system-ui, sans-serif';
+      layoutSide(outside.filter(x=>x.side==='left'));
+      layoutSide(outside.filter(x=>x.side==='right'));
+
+      ctx.lineWidth=1.1;
+      ctx.font='700 9px Inter, system-ui, sans-serif';
       ctx.textBaseline='middle';
 
-      items.forEach(it=>{
+      outside.forEach(it=>{
         const isRight=it.side==='right';
-        const elbowX=isRight?it.mx+12:it.mx-12;
+        const elbowX=isRight?it.mx+10:it.mx-10;
         const textX=isRight?chart.width-7:7;
-        const lineEndX=isRight?textX-5:textX+5;
+        const lineEndX=isRight?textX-4:textX+4;
 
         ctx.strokeStyle=it.color;
         ctx.beginPath();
@@ -278,9 +337,9 @@ const chartValueLabelPlugin={
 
         ctx.fillStyle='#334155';
         ctx.textAlign=isRight?'right':'left';
-        const pctText=it.percent.toLocaleString('es-EC',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
-        ctx.fillText(`${pctText} (${fmt(it.value)})`,textX,it.y);
+        ctx.fillText(`${it.pctText} ${it.countText}`,textX,it.y);
       });
+
       ctx.restore();
       return;
     }
@@ -369,8 +428,18 @@ function renderVerifiedPointMap(id,d){
  const el=$(id);if(!el)return;
  removeCurrentMap();
 
+ // REGLA ESTRICTA: solo COORDENADA VERIFICADA = SI.
  const points=d.filter(validVerifiedCoordinate);
- heatMap=L.map(id,{zoomControl:false,scrollWheelZoom:false,dragging:true,doubleClickZoom:true,boxZoom:true,keyboard:true}).setView([-1.7,-78.6],6);
+
+ heatMap=L.map(id,{
+   zoomControl:false,
+   scrollWheelZoom:false,
+   dragging:true,
+   doubleClickZoom:true,
+   boxZoom:true,
+   keyboard:true
+ }).setView([-1.7,-78.6],6);
+
  L.control.zoom({position:'bottomright'}).addTo(heatMap);
  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
    maxZoom:19,
@@ -378,27 +447,42 @@ function renderVerifiedPointMap(id,d){
  }).addTo(heatMap);
 
  const group=L.featureGroup().addTo(heatMap);
+
  points.forEach(r=>{
+   const pointColor=statusChartColor(r.status);
+
    const marker=L.circleMarker([r.latitude,r.longitude],{
      radius:5,
      color:'#ffffff',
-     weight:1.4,
-     fillColor:COLORS.orange,
-     fillOpacity:.88
+     weight:1.35,
+     fillColor:pointColor,
+     fillOpacity:.9
    });
+
    marker.bindPopup(
      `<b>${escapeHtml(r.name||'Beneficiario')}</b>`+
      `<br>${escapeHtml(r.province)} · ${escapeHtml(r.canton)}`+
      (r.parish?`<br>${escapeHtml(r.parish)}`:'')+
      `<br><b>Estado:</b> ${escapeHtml(r.status)}`+
      `<br><b>Tipología:</b> ${escapeHtml(r.typology)}`+
-     `<br><span style="color:#667085">Coordenada verificada</span>`
+     `<br><span style="color:#667085">Coordenada verificada: SI</span>`
    );
    marker.addTo(group);
  });
 
- const countEl=$(`mapCount-${active}`);
- if(countEl)countEl.textContent=`${fmt(points.length)} ubicaciones visibles`;
+ // Leyenda de los estados que realmente están visibles en el mapa.
+ const legendEl=$(`mapLegend-${active}`);
+ if(legendEl){
+   const stateCounts=groupCount(points,'status');
+   const legendItems=stateCounts.map(([label,count])=>{
+     const color=statusChartColor(label);
+     return `<span class="pointLegendItem"><span class="pointDot" style="background:${color}"></span>${escapeHtml(label)} <b>${fmt(count)}</b></span>`;
+   }).join('');
+
+   legendEl.innerHTML=
+     (legendItems||'<span style="color:#98a2b3">No hay coordenadas verificadas visibles con los filtros actuales.</span>')+
+     `<span class="count" id="mapCount-${active}">${fmt(points.length)} ubicaciones visibles</span>`;
+ }
 
  if(points.length){
    const bounds=group.getBounds();
@@ -406,6 +490,7 @@ function renderVerifiedPointMap(id,d){
  }else{
    heatMap.setView([-1.7,-78.6],6);
  }
+
  setTimeout(()=>heatMap.invalidateSize(),100);
 }
 
