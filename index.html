@@ -150,7 +150,7 @@ function dashboardSection(id){
  const mapTitle=is1A?'Mapa de beneficiarios georreferenciados':'Distribución territorial de beneficiarios';
  const mapHint=is1A?'Solo se muestran registros con COORDENADA VERIFICADA = SI':'Mapa de calor por provincia · Ecuador continental';
  const mapFooter=is1A
-   ? `<div class="pointLegend" id="mapLegend-${id}"><span class="count" id="mapCount-${id}">0 ubicaciones visibles</span></div>`
+   ? `<div class="pointLegend" id="mapLegend-${id}"></div>`
    : `<div class="heatLegend"><span>Menor</span><div class="heatRamp"></div><span>Mayor</span></div>`;
  return `<section id="${id}" class="section ${id===active?'active':''}">
  <div class="grid kpis" id="kpis-${id}"></div>
@@ -161,7 +161,6 @@ function dashboardSection(id){
  <div class="card"><div class="cardHead"><h3>Tipología de vivienda</h3><div class="hint">2D, 3D, 4D y otros</div></div><div class="chartBox"><canvas id="typology-${id}"></canvas></div></div></div>
  <div class="grid row2"><div class="card"><div class="cardHead"><h3>Evolución de calificaciones</h3><div class="hint">Según fecha de resolución/calificación</div></div><div class="chartBox sm"><canvas id="timeline-${id}"></canvas></div></div>
  <div class="card"><div class="cardHead"><h3>Condición prioritaria</h3><div class="hint">Discapacidad del beneficiario o núcleo familiar</div></div><div class="chartBox sm"><canvas id="priority-${id}"></canvas></div></div></div>
- <div class="card wide"><div class="cardHead"><h3>Detalle de beneficiarios</h3><div class="hint" id="tableHint-${id}"></div></div><div class="tableWrap" id="table-${id}"></div><div class="note">La tabla muestra hasta 100 registros por rendimiento; los indicadores y gráficos consideran todos los registros filtrados.</div></div>
  </section>`;
 }
 function placeholderSection(id){let c=DATASETS[id];return `<section id="${id}" class="section"><div class="placeholder"><div class="card empty"><div class="emptyIcon"><i data-lucide="construction"></i></div><h2>${c.label}</h2><p>Estamos trabajando en estas opciones.</p></div></div></section>`}
@@ -474,14 +473,13 @@ function renderVerifiedPointMap(id,d){
  const legendEl=$(`mapLegend-${active}`);
  if(legendEl){
    const stateCounts=groupCount(points,'status');
-   const legendItems=stateCounts.map(([label,count])=>{
+   const legendItems=stateCounts.map(([label])=>{
      const color=statusChartColor(label);
-     return `<span class="pointLegendItem"><span class="pointDot" style="background:${color}"></span>${escapeHtml(label)} <b>${fmt(count)}</b></span>`;
+     return `<span class="pointLegendItem"><span class="pointDot" style="background:${color}"></span>${escapeHtml(label)}</span>`;
    }).join('');
 
    legendEl.innerHTML=
-     (legendItems||'<span style="color:#98a2b3">No hay coordenadas verificadas visibles con los filtros actuales.</span>')+
-     `<span class="count" id="mapCount-${active}">${fmt(points.length)} ubicaciones visibles</span>`;
+     legendItems||'<span style="color:#98a2b3">No hay coordenadas verificadas visibles con los filtros actuales.</span>';
  }
 
  if(points.length){
@@ -553,10 +551,9 @@ function renderActive(){if(!DATASETS[active].ready)return;destroyCharts();let d=
  makeChart(`timeline-${active}`,'line',years,[{label:'Calificados',data:years.map(y=>byYear[y]),borderColor:COLORS.orange,backgroundColor:'rgba(249,115,22,.10)',pointBackgroundColor:COLORS.orange,pointBorderColor:'#fff',pointBorderWidth:2,tension:.25,pointRadius:4,fill:true}],{layout:{padding:{top:28,right:18,left:4,bottom:4}}});
 
  let priority=[['Beneficiario con discapacidad',d.filter(r=>isYes(r.disBenef)).length],['Núcleo familiar con discapacidad',d.filter(r=>isYes(r.disFamily)).length],['Adulto mayor',d.filter(r=>isYes(r.adult)).length]];
- makeChart(`priority-${active}`,'bar',priority.map(x=>x[0]),[{label:'Beneficiarios',data:priority.map(x=>x[1]),backgroundColor:COLORS.green,borderRadius:2}],{indexAxis:'y',layout:{padding:{top:8,right:52,left:4,bottom:4}},scales:{x:{beginAtZero:true,grid:{color:'#e8edf3'},ticks:{callback:v=>fmt(v)}},y:{grid:{display:false}}}});
+ makeChart(`priority-${active}`,'bar',priority.map(x=>x[0]),[{label:'Beneficiarios',data:priority.map(x=>x[1]),backgroundColor:COLORS.blue,borderRadius:2}],{indexAxis:'y',layout:{padding:{top:8,right:52,left:4,bottom:4}},scales:{x:{beginAtZero:true,grid:{color:'#e8edf3'},ticks:{callback:v=>fmt(v)}},y:{grid:{display:false}}}});
 
  renderMap(`map-${active}`,d);
- renderTable(`table-${active}`,d);
  let loaded=loadedAt[active]?loadedAt[active].toLocaleString('es-EC'):'sin lectura';
  $('updateTxt').textContent=loadErrors[active]?`No se pudo actualizar la matriz: ${loadErrors[active]}`:`Última lectura: ${loaded} · ${fmt(d.length)} registros filtrados de ${fmt(activeData().length)}`;
  if(window.lucide)lucide.createIcons();
