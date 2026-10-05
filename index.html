@@ -51,7 +51,7 @@ button,select,input{font:inherit}.hide{display:none!important}
 .nav button{border:0;background:transparent;color:#475467;border-radius:13px;padding:11px 12px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;transition:.18s ease}.nav button:hover{background:#fff7ed;color:#c2410c}.nav button.active{background:linear-gradient(135deg,#fff1e7,#ffedd5);color:#c2410c;box-shadow:inset 0 0 0 1px #fed7aa}.nav button.pending{color:#8992a3}.nav button.pending:hover{color:#c2410c}.nav .ico{width:20px;height:20px;display:grid;place-items:center}.nav svg{width:18px;height:18px;stroke-width:2.2}
 .filters{
   margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;
-  display:grid;grid-template-columns:1.12fr 1fr 1fr .85fr .9fr .9fr 1.25fr auto;gap:11px;position:sticky;top:8px;z-index:900;align-items:end
+  display:grid;grid-template-columns:1fr 1fr 1fr .75fr .8fr .9fr .9fr 1.1fr auto;gap:11px;position:sticky;top:8px;z-index:900;align-items:end
 }
 .filterField{display:block;min-width:0}.filterField>span{display:block;font-size:11px;color:var(--muted);font-weight:750;margin:0 0 6px}.filters select,.filters input,.multiSelect>button{width:100%;height:40px;border:1px solid var(--line);border-radius:12px;padding:0 10px;background:#fff;color:var(--text);outline:none;min-width:0}.filters select:focus,.filters input:focus,.multiSelect>button:focus{border-color:#fb923c;box-shadow:0 0 0 3px rgba(249,115,22,.12)}.filters input::placeholder{color:#98a2b3}.actionBtn{height:40px;border:1px solid var(--line);background:#f8fafc;color:#475467;border-radius:12px;font-weight:800;padding:0 13px;cursor:pointer;white-space:nowrap}.actionBtn:hover{background:#fff7ed;border-color:#fed7aa;color:#c2410c}
 .multiSelect{position:relative}.multiSelect>button{cursor:pointer;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.multiMenu{position:absolute;top:46px;left:0;width:260px;max-height:310px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px;box-shadow:0 18px 38px rgba(15,23,42,.16);display:none;z-index:950;color:#344054}.multiMenu.open{display:block}.multiMenu label{display:flex;gap:8px;align-items:center;padding:8px;border-radius:8px;cursor:pointer;font-size:12px}.multiMenu label:hover{background:#fff7ed}.multiMenu input{width:auto;height:auto;accent-color:var(--primary)}.multiActions{display:flex;gap:6px;padding:4px 3px 8px}.multiActions button{border:1px solid #fed7aa;background:#fff7ed;color:#9a3412;border-radius:8px;padding:6px 8px;font-size:11px;font-weight:750;cursor:pointer}
@@ -92,6 +92,7 @@ button,select,input{font:inherit}.hide{display:none!important}
       <div class="filterField"><span id="cantonLabel">Cantón</span><div class="multiSelect" id="cantonBox"><button type="button" id="cantonBtn" aria-labelledby="cantonLabel cantonBtn" aria-expanded="false" aria-controls="cantonMenu" onclick="toggleMultiMenu('canton',event)">Todos los cantones</button><div class="multiMenu" id="cantonMenu"></div></div></div>
       <div class="filterField"><span id="statusLabel">Estado</span><div class="multiSelect" id="statusBox"><button type="button" id="statusBtn" aria-labelledby="statusLabel statusBtn" aria-expanded="false" aria-controls="statusMenu" onclick="toggleMultiMenu('status',event)">Todos los estados</button><div class="multiMenu" id="statusMenu"></div></div></div>
       <label class="filterField"><span>Sexo</span><select id="fSex"><option value="">Todos</option></select></label>
+      <label class="filterField"><span>Sector</span><select id="fSector"><option value="">Todos</option><option value="URBANO">Urbano</option><option value="RURAL">Rural</option></select></label>
       <label class="filterField"><span>Fecha desde</span><input id="fFrom" type="date"></label>
       <label class="filterField"><span>Fecha hasta</span><input id="fTo" type="date"></label>
       <label class="filterField"><span>Buscar</span><input id="fSearch" type="search" placeholder="Nombre o cédula"></label>
@@ -120,7 +121,7 @@ const PALETTE=[COLORS.orange,COLORS.blue,COLORS.green,COLORS.amber,COLORS.gray,C
 let active='oneA', charts={}, heatMap=null, dataStore={oneA:[],oneB:[],emergency:[]}, loadedAt={}, loadErrors={};
 const lastSourceText={};
 let refreshInProgress=false;
-let filterState={oneA:{provinces:[],cantons:[],statuses:[],sex:'',from:'',to:'',search:''},oneB:{provinces:[],cantons:[],statuses:[],sex:'',from:'',to:'',search:''},emergency:{provinces:[],cantons:[],statuses:[],sex:'',from:'',to:'',search:''}};
+let filterState={oneA:{provinces:[],cantons:[],statuses:[],sex:'',sector:'',from:'',to:'',search:''},oneB:{provinces:[],cantons:[],statuses:[],sex:'',sector:'',from:'',to:'',search:''},emergency:{provinces:[],cantons:[],statuses:[],sex:'',sector:'',from:'',to:'',search:''}};
 const $=id=>document.getElementById(id);
 const fmt=n=>Number(n||0).toLocaleString('es-EC');
 const pct=(a,b)=>b?(a/b*100).toLocaleString('es-EC',{maximumFractionDigits:1})+'%':'0%';
@@ -141,7 +142,7 @@ function rowModel(r,datasetId){
  const longitude=parseCoordinate(pick(r,['LONGITUD','LONGITUDE']));
  const latitude=parseCoordinate(pick(r,['LATITUD','LATITUDE']));
  const coordVerified=String(pick(r,['COORDENADA VERIFICADA'])).trim();
- return {raw:r,date,dateObj:parseDate(date),name:String(pick(r,['APELLIDOS Y NOMBRES BENEFICIARIO'])).trim(),id:String(pick(r,['CEDULA DE BENEFICIARIO','CÉDULA DE BENEFICIARIO'])).trim(),status:String(pick(r,['ESTADO DE ATENCIÓN','ESTADO DE ATENCION'])).trim()||'SIN DATO',sex:String(pick(r,['SEXO (HOMBRE/MUJER)'])).trim()||'SIN DATO',province:String(pick(r,['PROVINCIA'])).trim()||'SIN PROVINCIA',canton:String(pick(r,['CANTON','CANTÓN'])).trim()||'SIN CANTÓN',parish:String(pick(r,['PARROQUIA'])).trim(),typology:String(pick(r,['TIPOLOGIA DE VIVIENDA','TIPOLOGÍA DE VIVIENDA'])).trim()||'SIN DATO',sector:String(pick(r,['SECTOR (URBANO/RURAL)','ZONA'])).trim()||'SIN DATO',disBenef:String(pick(r,['DISCAPACIDAD DEL BENEFICIARIO'])).trim(),disFamily:String(pick(r,['DISCAPACIDAD DE ALGÚN MIEMBRO DE NÚCLEO FAMILIAR','DISCAPACIDAD DE ALGUN MIEMBRO DE NUCLEO FAMILIAR'])).trim(),adult:String(pick(r,['ADULTO MAYOR (SI / NO)'])).trim(),project:String(pick(r,['PROYECTO'])).trim(),constructor:String(pick(r,['CONSTRUCTOR'])).trim(),resolution:String(pick(r,['RESOLUCIÓN DE CALIFICACIÓN','RESOLUCION DE CALIFICACIÓN','RESOLUCION DE CALIFICACION'])).trim(),longitude,latitude,coordVerified,datasetId};
+ return {raw:r,date,dateObj:parseDate(date),name:String(pick(r,['APELLIDOS Y NOMBRES BENEFICIARIO'])).trim(),id:String(pick(r,['CEDULA DE BENEFICIARIO','CÉDULA DE BENEFICIARIO'])).trim(),status:String(pick(r,['ESTADO DE ATENCIÓN','ESTADO DE ATENCION'])).trim()||'SIN DATO',sex:String(pick(r,['SEXO (HOMBRE/MUJER)'])).trim()||'SIN DATO',province:String(pick(r,['PROVINCIA'])).trim()||'SIN PROVINCIA',canton:String(pick(r,['CANTON','CANTÓN'])).trim()||'SIN CANTÓN',parish:String(pick(r,['PARROQUIA'])).trim(),typology:String(pick(r,['TIPOLOGIA DE VIVIENDA','TIPOLOGÍA DE VIVIENDA'])).trim()||'SIN DATO',sector:String(pick(r,['SECTOR (URBANO/RURAL)','SECTOR','ZONA'])).trim()||'SIN DATO',disBenef:String(pick(r,['DISCAPACIDAD DEL BENEFICIARIO'])).trim(),disFamily:String(pick(r,['DISCAPACIDAD DE ALGÚN MIEMBRO DE NÚCLEO FAMILIAR','DISCAPACIDAD DE ALGUN MIEMBRO DE NUCLEO FAMILIAR'])).trim(),adult:String(pick(r,['ADULTO MAYOR (SI / NO)'])).trim(),project:String(pick(r,['PROYECTO'])).trim(),constructor:String(pick(r,['CONSTRUCTOR'])).trim(),resolution:String(pick(r,['RESOLUCIÓN DE CALIFICACIÓN','RESOLUCION DE CALIFICACIÓN','RESOLUCION DE CALIFICACION'])).trim(),longitude,latitude,coordVerified,datasetId};
 }
 function emergencyRowModel(raw){
  const row=rowModel(raw,'emergency');
@@ -272,12 +273,12 @@ function fillMultiMenu(name,vals){
  $(name+'Btn').textContent=selected.length?(selected.length<=2?selected.join(', '):`${selected.length} ${cfg.plural}`):cfg.all;
  $(name+'Btn').title=selected.length?selected.join(', '):cfg.all;
 }
-function syncFilterControls(){let st=state(),all=activeData();fillMultiMenu('province',uniqueVals(all,'province'));let provinceSet=st.provinces.length?new Set(st.provinces):null;let cans=uniqueVals(all.filter(r=>!provinceSet||provinceSet.has(r.province)),'canton');fillMultiMenu('canton',cans);fillMultiMenu('status',uniqueVals(all,'status'));fillSelect('fSex',uniqueVals(all,'sex'),'Todos',st.sex);$('fFrom').value=st.from;$('fTo').value=st.to;$('fSearch').value=st.search;}
+function syncFilterControls(){let st=state(),all=activeData();fillMultiMenu('province',uniqueVals(all,'province'));let provinceSet=st.provinces.length?new Set(st.provinces):null;let cans=uniqueVals(all.filter(r=>!provinceSet||provinceSet.has(r.province)),'canton');fillMultiMenu('canton',cans);fillMultiMenu('status',uniqueVals(all,'status'));fillSelect('fSex',uniqueVals(all,'sex'),'Todos',st.sex);$('fSector').value=st.sector;$('fFrom').value=st.from;$('fTo').value=st.to;$('fSearch').value=st.search;}
 function fillSelect(id,vals,allLabel,current){$(id).innerHTML=`<option value="">${allLabel}</option>`+vals.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');if(vals.includes(current))$(id).value=current;else if(current)state().sex='';}
 function bindFilters(){
  $('nav').addEventListener('click',()=>reloadActive(true));
  Object.entries(multiFilters).forEach(([name,cfg])=>$(name+'Menu').addEventListener('change',()=>{state()[cfg.key]=selectedValues(name);syncFilterControls();renderActive();}));
- [['fSex','sex'],['fFrom','from'],['fTo','to']].forEach(([id,k])=>$(id).addEventListener('change',()=>{state()[k]=$(id).value;renderActive();}));
+ [['fSex','sex'],['fSector','sector'],['fFrom','from'],['fTo','to']].forEach(([id,k])=>$(id).addEventListener('change',()=>{state()[k]=$(id).value;renderActive();}));
  let timer;$('fSearch').addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(()=>{state().search=$('fSearch').value.trim();renderActive();},180)});
  document.addEventListener('click',e=>{Object.keys(multiFilters).forEach(name=>{if(!$(name+'Box').contains(e.target))closeMultiMenu(name)})});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){const open=Object.keys(multiFilters).find(name=>$(name+'Menu').classList.contains('open'));closeProvinceMenu();if(open)$(open+'Btn').focus();}});
@@ -288,7 +289,7 @@ function closeMultiMenu(name){$(name+'Menu')?.classList.remove('open');$(name+'B
 function closeProvinceMenu(){Object.keys(multiFilters).forEach(closeMultiMenu)}
 function selectAllMulti(name,checked){document.querySelectorAll(`#${name}Menu input[type=checkbox]`).forEach(x=>x.checked=checked);state()[multiFilters[name].key]=selectedValues(name);syncFilterControls();renderActive()}
 function toggleMobileFilters(){document.body.classList.toggle('mobileFiltersOpen')}
-function clearFilters(){filterState[active]={provinces:[],cantons:[],statuses:[],sex:'',from:'',to:'',search:''};syncFilterControls();renderActive()}
+function clearFilters(){filterState[active]={provinces:[],cantons:[],statuses:[],sex:'',sector:'',from:'',to:'',search:''};syncFilterControls();renderActive()}
 async function reloadActive(automatic=false){
  if(!DATASETS[active].ready||refreshInProgress||(automatic&&document.visibilityState==='hidden'))return;
  const id=active;refreshInProgress=true;
@@ -310,7 +311,7 @@ function updateRefreshStatus(){
  $('updateTxt').textContent=loadErrors[id]?`No se pudo actualizar la matriz: ${loadErrors[id]}`:`Última lectura: ${loaded} · ${fmt(filteredData().length)} registros filtrados de ${fmt(activeData().length)}`;
  $('updateTxt').title=loadErrors[id]?'Se conservan los últimos datos cargados. Se reintentará automáticamente.':`Última lectura: ${loaded}. Revisión automática cada minuto.`;
 }
-function filteredData(){let st=state(),pSet=st.provinces.length?new Set(st.provinces):null,cSet=st.cantons.length?new Set(st.cantons):null,sSet=st.statuses.length?new Set(st.statuses):null,from=st.from?new Date(st.from+'T00:00:00'):null,to=st.to?new Date(st.to+'T23:59:59'):null,q=norm(st.search);return activeData().filter(r=>(!pSet||pSet.has(r.province))&&(!cSet||cSet.has(r.canton))&&(!sSet||sSet.has(r.status))&&(!st.sex||r.sex===st.sex)&&(!from||(r.dateObj&&r.dateObj>=from))&&(!to||(r.dateObj&&r.dateObj<=to))&&(!q||norm(`${r.name} ${r.id} ${r.project} ${r.resolution}`).includes(q)));}
+function filteredData(){let st=state(),pSet=st.provinces.length?new Set(st.provinces):null,cSet=st.cantons.length?new Set(st.cantons):null,sSet=st.statuses.length?new Set(st.statuses):null,from=st.from?new Date(st.from+'T00:00:00'):null,to=st.to?new Date(st.to+'T23:59:59'):null,q=norm(st.search);return activeData().filter(r=>(!pSet||pSet.has(r.province))&&(!cSet||cSet.has(r.canton))&&(!sSet||sSet.has(r.status))&&(!st.sex||r.sex===st.sex)&&(!st.sector||norm(r.sector)===st.sector)&&(!from||(r.dateObj&&r.dateObj>=from))&&(!to||(r.dateObj&&r.dateObj<=to))&&(!q||norm(`${r.name} ${r.id} ${r.project} ${r.resolution}`).includes(q)));}
 function groupCount(arr,keyFn){let m=new Map();arr.forEach(r=>{let k=typeof keyFn==='function'?keyFn(r):r[keyFn];k=k||'SIN DATO';m.set(k,(m.get(k)||0)+1)});return [...m.entries()].sort((a,b)=>b[1]-a[1]||String(a[0]).localeCompare(String(b[0]),'es'))}
 function isYes(v){return ['SI','SÍ'].includes(norm(v))}
 function isInProcess(s){return norm(s).startsWith('EN PROCESO')}
